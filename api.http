@@ -33,4 +33,4 @@ Content-Type: application/json
 
 ###Borrar pelicula
 
-DELETE http://localhost:3000/movies/d226da52-68b1-46b8-939a-aa4a07927fa0
+DELETE http://localhost:3000/movies/8fb17ae1-bdfe-45e5-a871-4772d7e526b8
