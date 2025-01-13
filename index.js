@@ -13,6 +13,10 @@ app.use(cors)
 const PORT= process.env.PORT ?? 3000;
 
 
+app.get('/',(req,res)=>{
+    res.json({message:"sv funcionando"})
+})
+
 app.get('/movies',(req,res)=>{
     res.header('Access-Control-Allow-Origin','*')
     const {genre}= req.query
