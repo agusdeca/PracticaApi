@@ -1,13 +1,16 @@
-const express=require('express')
-const crypto=require('node:crypto')
-const fs = require('fs');
-const path = require('path');
-const peliculas= require('./movies.json')
-const cors=require('cors')
-const {validateSchema,validatePartialMovie}=require('./Schemas/movieSchema')
+import express, { json } from 'express';
+import { randomUUID } from 'node:crypto';
+import { writeFile } from 'fs';
+import fs from 'node:fs';
+import { join } from 'path';
+//import peliculas from './movies.json' with {type: 'json'};
+import cors from 'cors';
+import { validateSchema, validatePartialMovie } from './Schemas/movieSchema.js';
+
+const peliculas= JSON.parse(fs.readFileSync('./movies.json','utf-8'))
 
 const app= express()
-app.use(express.json())
+app.use(json())
 app.use(cors())
 
 const PORT= process.env.PORT ?? 3000;
@@ -57,7 +60,7 @@ app.delete('/movies/:id',(req,res)=>{
         res.status(404).json({message:"id no encontrado"})
     }
 
-    fs.writeFile('./movies.json', JSON.stringify(filteredMovies, null, 2), (err) => {
+    writeFile('./movies.json', JSON.stringify(filteredMovies, null, 2), (err) => {
         if (err) {
             res.status(404).json({message:"no se pudo escribir el json"})
         }
@@ -81,11 +84,11 @@ app.post('/movies',(req,res)=>{
     
 
     const newMovie={
-        id:crypto.randomUUID(),...result.data
+        id:randomUUID(),...result.data
     }
     peliculas.push(newMovie)
 
-    fs.writeFile('./movies.json', JSON.stringify(peliculas, null, 2), (err) => {
+    writeFile('./movies.json', JSON.stringify(peliculas, null, 2), (err) => {
         if (err) {
             console.error('Error al guardar la película:', err);
             return res.status(500).json({ message: 'Error al guardar la película' });
@@ -114,8 +117,8 @@ app.patch('/movies/:id', (req, res) => {
 
     peliculas[movieIndex] = peliculaActualizada;
 
-    fs.writeFile(
-        path.join(__dirname, 'movies.json'),
+    writeFile(
+        join(__dirname, 'movies.json'),
         JSON.stringify(peliculas, null, 2), // Formatear con 2 espacios para que sea legible
         (err) => {
             if (err) {
